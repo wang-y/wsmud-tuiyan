@@ -243,11 +243,11 @@ class wsinfer:
 # <cyn>当你的气血降低到10%时候会恢复10%气血，并短时间无视伤害，冷却10分钟(混沌)</cyn>
 if __name__ == '__main__':
     userInfo={
-         "account":"wy90314",          # 帐号
-         "password":"cy!#cnm314",      # 密码
+         "account":"",          # 帐号
+         "password":"",      # 密码
          "zone":"2",                   # 区服
-         "player":"莫轻寒",             # 角色名
-         "book":'血肉苦弱',             # 自创秘籍名称
+         "player":"",             # 角色名
+         "book":'',             # 自创秘籍名称
          "position":'force',               # 推演位置 : force unarmed dodge staff throwing parry sword blade club whip
          "attributes":["暴击伤害","移花"],             # 想要附加的属性或词条，目前支持 ：冷却百分比 冷却时间 破防 终伤 臂力 暴击 暴击伤害 命中 命中百分比 攻击 攻击百分比 剑心 不灭 战神  移花
          "continuation": False,        # 是否连续跳到指定的总次数 True：连续跳，不中断， False： 根据配置的step中断
