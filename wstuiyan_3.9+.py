@@ -181,7 +181,6 @@ class wsinfer:
     # {type:"status","action":"add",id:"t3tl4ef988e",sid:"food","name":"玄灵丹","duration":300000}
     # {type:"status","action":"remove",id:"t3tl4ef988e",sid:"food"}
     def on_message(self,ws, message):
-        print(message)
         if "{" and "}" in message:
             e = self.convet_json(message)
             if e['type'] == "msg":
