@@ -32,6 +32,7 @@ class wsinfer:
     haveBingxin=False
     feiyiId=""
     bingxinId=""
+    bingxinIdCount=0
     curFeiyiStatus=False
     curBingxinStatus=False
     addr = {"住房-练功房": "jh fam 0 start;go west;go west;go north;go enter;go west"}
@@ -126,6 +127,7 @@ class wsinfer:
         for item in items:
             if "冰心丹" in item['name']:
                 self.bingxinId=item['id']
+                self.bingxinIdCount=item['count']
                 break
 
     def infer(self):
@@ -144,12 +146,12 @@ class wsinfer:
             time.sleep(1)
             self.logCat("推演结束，修炼")
             self.sendcmd("xiulian")
-            time.sleep(1)
             self.ws.close()
         else:
             if self.feiyiId and self.curFeiyiStatus == False:
-                time.sleep(1)
                 self.sendcmd('use ' + self.feiyiId) 
+            if self.bingxinIdCount > 0 and self.curBingxinStatus == False:
+                self.sendcmd('use ' + self.bingxinId) 
             self.logCat("推演未结束，继续")
             self.sendcmd('zc typelv {0}'.format(self.position))
 
@@ -178,16 +180,31 @@ class wsinfer:
                 self.sendcmd('zc prop {0} ban'.format(self.position))
         self.stopOrContinue()
 
+    def setStatus(self,status):
+        for i in status:
+            if i['sid'] == "food" and i['name'] == "冰心丹":
+                self.curBingxinStatus=True
+                self.logCat("嗑过药了")
+            elif i['sid'] == "fy" and i['name'] == "飞翼":
+                self.curBingxinStatus=True
+                self.logCat("飞翼已开")
+                
+                
     # {type:"status","action":"add",id:"t3tl4ef988e",sid:"food","name":"玄灵丹","duration":300000}
     # {type:"status","action":"remove",id:"t3tl4ef988e",sid:"food"}
     def on_message(self,ws, message):
+        self.logCat(message)
         if "{" and "}" in message:
             e = self.convet_json(message)
             if e['type'] == "msg":
                 self.getmyname(e)
+            if e['type'] == "itemadd":
+                self.setStatus(e['status'])
             if e['type'] == "status":
                 if e['action'] == "add":
                     if e['sid'] == "food":
+                        self.logCat("嗑药嗑药")
+                        self.bingxinIdCount=self.bingxinIdCount-1
                         self.curBingxinStatus=True
                     elif e['sid']=="fy":
                         self.logCat("激活飞翼")
@@ -196,6 +213,7 @@ class wsinfer:
                     if e['sid'] == "food":
                         self.curBingxinStatus=False
                     elif e['sid']=="fy":
+                        self.logCat("药没了。")
                         self.logCat("飞翼结束")
                         self.curFeiyiStatus=False
             if e['type'] =="dialog":
